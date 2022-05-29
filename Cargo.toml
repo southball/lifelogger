@@ -1,0 +1,13 @@
+[package]
+name = "yew-app"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+yew = "0.19"
+im = "15.1.0"
+thiserror = "1.0.31"
+web-sys = "0.3.57"
+uuid = { version = "1.1.0", features = ["v4", "fast-rng", "js"] }
