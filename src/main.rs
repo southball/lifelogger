@@ -2,11 +2,11 @@
 extern crate derive_builder;
 
 use crate::components::entrypoint::*;
-use context::*;
 
 pub mod components;
 pub mod context;
 pub mod models;
+pub mod prelude;
 
 fn main() {
     yew::start_app::<Entrypoint>();

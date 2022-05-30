@@ -1,19 +1,26 @@
 use thiserror::Error;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Builder)]
 pub struct Todo {
+    #[builder(default = "uuid::Uuid::new_v4().to_string()")]
     pub id: String,
     pub title: String,
     pub description: String,
+    #[builder(default = "false")]
     pub completed: bool,
+
+    #[builder(default = "chrono::Utc::now()")]
+    pub created_at: chrono::DateTime<chrono::Utc>,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Builder)]
 pub struct Activity {
+    #[builder(default = "uuid::Uuid::new_v4().to_string()")]
     pub id: String,
     pub title: String,
     pub description: String,
 
+    #[builder(default)]
     pub todo_id: Option<String>,
 }
 
@@ -30,6 +37,12 @@ pub enum TodoMutation {
 
 pub enum Mutation {
     Todo(TodoMutation),
+}
+
+impl From<TodoMutation> for Mutation {
+    fn from(todo_mutation: TodoMutation) -> Mutation {
+        Mutation::Todo(todo_mutation)
+    }
 }
 
 #[derive(Error, Debug)]

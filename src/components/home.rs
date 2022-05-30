@@ -1,6 +1,6 @@
 use super::display::*;
 use super::editor::*;
-use crate::models::*;
+use crate::prelude::*;
 use yew::prelude::*;
 
 pub enum HomeMsg {
@@ -17,11 +17,7 @@ impl Component for Home {
         Self {}
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
-        false
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <>
                 <Display />

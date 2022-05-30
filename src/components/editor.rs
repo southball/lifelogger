@@ -1,6 +1,4 @@
-use crate::context::*;
-use crate::models::*;
-use uuid::Uuid;
+use crate::prelude::*;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
@@ -41,26 +39,30 @@ impl Component for Editor {
                 let description = description_input.value();
                 title_input.set_value("");
                 description_input.set_value("");
-                state_context
-                    .mutate
-                    .emit(Mutation::Todo(TodoMutation::Add(Todo {
-                        id: Uuid::new_v4().to_string(),
-                        title,
-                        description,
-                        completed: false,
-                    })));
+                state_context.mutate.emit(Mutation::Todo(TodoMutation::Add(
+                    TodoBuilder::default()
+                        .title(title)
+                        .description(description)
+                        .build()
+                        .unwrap(),
+                )));
                 true
             }
         }
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let onclick = ctx.link().callback(|_| EditorMsg::Add);
+        let onsubmit = ctx.link().callback(|event: web_sys::FocusEvent| {
+            event.prevent_default();
+            EditorMsg::Add
+        });
         html! {
             <div>
-                <input type="text" placeholder="Title" ref={self.title_ref.clone()} />
-                <input type="text" placeholder="Description" ref={self.description_ref.clone()} />
-                <button type="button" onclick={onclick}>{"Add"}</button>
+                <form onsubmit={onsubmit}>
+                    <input type="text" placeholder="Title" ref={self.title_ref.clone()} />
+                    <input type="text" placeholder="Description" ref={self.description_ref.clone()} />
+                    <button type="submit">{"Add"}</button>
+                </form>
             </div>
         }
     }
