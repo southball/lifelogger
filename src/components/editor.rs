@@ -1,3 +1,4 @@
+use crate::context::*;
 use crate::models::*;
 use uuid::Uuid;
 use web_sys::HtmlInputElement;
@@ -13,13 +14,11 @@ pub enum EditorMsg {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct EditorProps {
-    pub on_mutation: Callback<Mutation>,
-}
+pub struct EditorProps {}
 
 impl Component for Editor {
     type Message = EditorMsg;
-    type Properties = EditorProps;
+    type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {
@@ -29,17 +28,21 @@ impl Component for Editor {
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+        let (state_context, _) = ctx
+            .link()
+            .context::<StateContext>(Callback::noop())
+            .unwrap();
+
         let title_input = self.title_ref.cast::<HtmlInputElement>().unwrap();
         let description_input = self.description_ref.cast::<HtmlInputElement>().unwrap();
         match msg {
             EditorMsg::Add => {
                 let title = title_input.value();
                 let description = description_input.value();
-                web_sys::console::log_2(&title.clone().into(), &description.clone().into());
                 title_input.set_value("");
                 description_input.set_value("");
-                ctx.props()
-                    .on_mutation
+                state_context
+                    .mutate
                     .emit(Mutation::Todo(TodoMutation::Add(Todo {
                         id: Uuid::new_v4().to_string(),
                         title,
