@@ -32,6 +32,7 @@ struct TodoDisplayProps {
 fn todo_display(props: &TodoDisplayProps) -> Html {
     let context = use_context::<StateContext>().unwrap();
     let todo = &props.todo;
+
     let on_checkbox_change = {
         let todo = todo.clone();
         Callback::from(move |_event: web_sys::Event| {
@@ -44,6 +45,7 @@ fn todo_display(props: &TodoDisplayProps) -> Html {
             );
         })
     };
+
     html! {
         <div>
             <p>
