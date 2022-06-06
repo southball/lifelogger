@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate derive_builder;
+extern crate derive_more;
 
 use crate::components::entrypoint::*;
 

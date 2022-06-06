@@ -1,3 +1,4 @@
+use derive_more::Display;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -25,10 +26,13 @@ pub enum RepeatingType {
     },
 }
 
+#[derive(Clone, Debug, Display, PartialEq, Eq, Serialize, Deserialize, Hash)]
+pub struct TopicID(pub String);
+
 #[derive(Clone, Debug, PartialEq, Builder, Serialize, Deserialize)]
 pub struct Topic {
-    #[builder(default = "uuid::Uuid::new_v4().to_string()")]
-    pub id: String,
+    #[builder(default = "TopicID(uuid::Uuid::new_v4().to_string())")]
+    pub id: TopicID,
     pub name: String,
     #[builder(default)]
     pub parent_id: Option<String>,
@@ -36,10 +40,13 @@ pub struct Topic {
     pub archived: bool,
 }
 
+#[derive(Clone, Debug, Display, PartialEq, Eq, Serialize, Deserialize, Hash)]
+pub struct TodoID(pub String);
+
 #[derive(Clone, Debug, PartialEq, Builder, Serialize, Deserialize)]
 pub struct Todo {
-    #[builder(default = "uuid::Uuid::new_v4().to_string()")]
-    pub id: String,
+    #[builder(default = "TodoID(uuid::Uuid::new_v4().to_string())")]
+    pub id: TodoID,
     pub title: String,
     pub description: String,
     #[builder(default = "false")]
@@ -49,15 +56,18 @@ pub struct Todo {
     #[builder(default)]
     pub deadline: Option<chrono::DateTime<chrono::Utc>>,
     #[builder(default)]
-    pub topic_id: Option<String>,
+    pub topic_id: Option<TopicID>,
     #[builder(default = "false")]
     pub archived: bool,
 }
 
+#[derive(Clone, Debug, Display, PartialEq, Eq, Serialize, Deserialize, Hash)]
+pub struct EventID(pub String);
+
 #[derive(Clone, Debug, PartialEq, Builder, Serialize, Deserialize)]
 pub struct Event {
-    #[builder(default = "uuid::Uuid::new_v4().to_string()")]
-    pub id: String,
+    #[builder(default = "EventID(uuid::Uuid::new_v4().to_string())")]
+    pub id: EventID,
     pub title: String,
     pub description: String,
     #[builder(default)]
@@ -67,15 +77,18 @@ pub struct Event {
     #[builder(default)]
     pub repeating_type: Option<RepeatingType>,
     #[builder(default)]
-    pub topic_id: Option<String>,
+    pub topic_id: Option<TopicID>,
     #[builder(default = "false")]
     pub archived: bool,
 }
 
+#[derive(Clone, Debug, Display, PartialEq, Eq, Serialize, Deserialize, Hash)]
+pub struct ActivityID(pub String);
+
 #[derive(Clone, Debug, PartialEq, Builder, Serialize, Deserialize)]
 pub struct Activity {
-    #[builder(default = "uuid::Uuid::new_v4().to_string()")]
-    pub id: String,
+    #[builder(default = "ActivityID(uuid::Uuid::new_v4().to_string())")]
+    pub id: ActivityID,
     pub title: String,
     pub description: String,
     #[builder(default)]
@@ -83,11 +96,11 @@ pub struct Activity {
     #[builder(default)]
     pub end_time: Option<chrono::DateTime<chrono::Utc>>,
     #[builder(default)]
-    pub topic_id: Option<String>,
+    pub topic_id: Option<TopicID>,
     #[builder(default)]
-    pub todo_id: Option<String>,
+    pub todo_id: Option<TodoID>,
     #[builder(default)]
-    pub event_id: Option<String>,
+    pub event_id: Option<EventID>,
     #[builder(default = "false")]
     pub archived: bool,
 }
@@ -95,10 +108,10 @@ pub struct Activity {
 /// This is the shared state that is shared across client and server.
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SharedState {
-    pub topics: im::HashMap<String, Topic>,
-    pub todos: im::HashMap<String, Todo>,
-    pub events: im::HashMap<String, Event>,
-    pub activities: im::HashMap<String, Activity>,
+    pub topics: im::HashMap<TopicID, Topic>,
+    pub todos: im::HashMap<TodoID, Todo>,
+    pub events: im::HashMap<EventID, Event>,
+    pub activities: im::HashMap<ActivityID, Activity>,
 }
 
 pub enum TopicMutation {
@@ -155,21 +168,21 @@ impl From<ActivityMutation> for Mutation {
 #[derive(Error, Debug)]
 pub enum UpdateError {
     #[error("Duplicate ID {0} when adding topic")]
-    DuplicateAddTopicID(String),
+    DuplicateAddTopicID(TopicID),
     #[error("ID {0} not found when updating topic")]
-    NotFoundUpdateTopicID(String),
+    NotFoundUpdateTopicID(TopicID),
     #[error("Duplicate ID {0} when adding todo")]
-    DuplicateAddTodoID(String),
+    DuplicateAddTodoID(TodoID),
     #[error("ID {0} not found when updating todo")]
-    NotFoundUpdateTodoID(String),
+    NotFoundUpdateTodoID(TodoID),
     #[error("Duplicate ID {0} when adding event")]
-    DuplicateAddEventID(String),
+    DuplicateAddEventID(EventID),
     #[error("ID {0} not found when updating event")]
-    NotFoundUpdateEventID(String),
+    NotFoundUpdateEventID(EventID),
     #[error("Duplicate ID {0} when adding activity")]
-    DuplicateAddActivityID(String),
+    DuplicateAddActivityID(ActivityID),
     #[error("ID {0} not found when updating activity")]
-    NotFoundUpdateActivityID(String),
+    NotFoundUpdateActivityID(ActivityID),
 }
 
 impl SharedState {

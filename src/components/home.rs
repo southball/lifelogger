@@ -9,17 +9,17 @@ pub fn home() -> Html {
         .todos
         .iter()
         .map(|(id, todo)| (id.to_owned(), todo.clone()))
-        .collect::<Vec<(String, Todo)>>();
+        .collect::<Vec<(TodoID, Todo)>>();
     let activities = shared_state
         .activities
         .iter()
         .map(|(id, activity)| (id.to_owned(), activity.clone()))
-        .collect::<Vec<(String, Activity)>>();
+        .collect::<Vec<(ActivityID, Activity)>>();
     let topics = shared_state
         .topics
         .iter()
         .map(|(id, activity)| (id.to_owned(), activity.clone()))
-        .collect::<Vec<(String, Topic)>>();
+        .collect::<Vec<(TopicID, Topic)>>();
     todos.sort_by(|(_, todo1), (_, todo2)| todo1.created_at.cmp(&todo2.created_at).reverse());
 
     html! {
@@ -28,7 +28,7 @@ pub fn home() -> Html {
                 <h2>{"Todos"}</h2>
                 { for todos.iter().map(|(id, todo)| {
                     html! {
-                        <div key={id.clone()}>
+                        <div key={id.clone().0}>
                             <input type="checkbox" checked={todo.completed} disabled={true} />
                             <b>{&todo.title}</b>
                             {" "}
@@ -48,7 +48,7 @@ pub fn home() -> Html {
                 <h2>{"Activities"}</h2>
                 { for activities.iter().map(|(id, activity)| {
                     html! {
-                        <div key={id.clone()}>
+                        <div key={id.clone().0}>
                             <b>{&activity.title}</b>
                         </div>
                     }
@@ -62,7 +62,7 @@ pub fn home() -> Html {
                 <h2>{"Topics"}</h2>
                 { for topics.iter().map(|(id, topic)| {
                     html! {
-                        <div key={id.clone()}>
+                        <div key={id.clone().0}>
                             <b>{&topic.name}</b>
                         </div>
                     }
