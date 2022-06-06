@@ -1,6 +1,30 @@
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub enum RepeatingType {
+    EveryNDays {
+        count: u32,
+    },
+    EveryNWeeks {
+        count: u32,
+        /// 0 is Sunday, 1 is Monday, etc.
+        days: [bool; 7],
+    },
+    EveryNMonthsDate {
+        count: u32,
+        date: u32,
+    },
+    EveryNMonthsWeekDay {
+        count: u32,
+        week: u32,
+        day: u32,
+    },
+    EveryNYears {
+        count: u32,
+    },
+}
+
 #[derive(Clone, Debug, PartialEq, Builder, Serialize, Deserialize)]
 pub struct Topic {
     #[builder(default = "uuid::Uuid::new_v4().to_string()")]
@@ -31,6 +55,24 @@ pub struct Todo {
 }
 
 #[derive(Clone, Debug, PartialEq, Builder, Serialize, Deserialize)]
+pub struct Event {
+    #[builder(default = "uuid::Uuid::new_v4().to_string()")]
+    pub id: String,
+    pub title: String,
+    pub description: String,
+    #[builder(default)]
+    pub start_time: Option<chrono::DateTime<chrono::Utc>>,
+    #[builder(default)]
+    pub end_time: Option<chrono::DateTime<chrono::Utc>>,
+    #[builder(default)]
+    pub repeating_type: Option<RepeatingType>,
+    #[builder(default)]
+    pub topic_id: Option<String>,
+    #[builder(default = "false")]
+    pub archived: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Builder, Serialize, Deserialize)]
 pub struct Activity {
     #[builder(default = "uuid::Uuid::new_v4().to_string()")]
     pub id: String,
@@ -41,9 +83,11 @@ pub struct Activity {
     #[builder(default)]
     pub end_time: Option<chrono::DateTime<chrono::Utc>>,
     #[builder(default)]
+    pub topic_id: Option<String>,
+    #[builder(default)]
     pub todo_id: Option<String>,
     #[builder(default)]
-    pub topic_id: Option<String>,
+    pub event_id: Option<String>,
     #[builder(default = "false")]
     pub archived: bool,
 }
@@ -51,19 +95,10 @@ pub struct Activity {
 /// This is the shared state that is shared across client and server.
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SharedState {
-    pub todos: im::HashMap<String, Todo>,
-    pub activities: im::HashMap<String, Activity>,
     pub topics: im::HashMap<String, Topic>,
-}
-
-pub enum TodoMutation {
-    Add(Todo),
-    Update(Todo),
-}
-
-pub enum ActivityMutation {
-    Add(Activity),
-    Update(Activity),
+    pub todos: im::HashMap<String, Todo>,
+    pub events: im::HashMap<String, Event>,
+    pub activities: im::HashMap<String, Activity>,
 }
 
 pub enum TopicMutation {
@@ -71,21 +106,31 @@ pub enum TopicMutation {
     Update(Topic),
 }
 
+pub enum TodoMutation {
+    Add(Todo),
+    Update(Todo),
+}
+
+pub enum EventMutation {
+    Add(Event),
+    Update(Event),
+}
+
+pub enum ActivityMutation {
+    Add(Activity),
+    Update(Activity),
+}
+
 pub enum Mutation {
-    Todo(TodoMutation),
-    Activity(ActivityMutation),
     Topic(TopicMutation),
+    Todo(TodoMutation),
+    Event(EventMutation),
+    Activity(ActivityMutation),
 }
 
 impl From<TodoMutation> for Mutation {
     fn from(todo_mutation: TodoMutation) -> Mutation {
         Mutation::Todo(todo_mutation)
-    }
-}
-
-impl From<ActivityMutation> for Mutation {
-    fn from(activity_mutation: ActivityMutation) -> Mutation {
-        Mutation::Activity(activity_mutation)
     }
 }
 
@@ -95,25 +140,65 @@ impl From<TopicMutation> for Mutation {
     }
 }
 
+impl From<EventMutation> for Mutation {
+    fn from(event_mutation: EventMutation) -> Mutation {
+        Mutation::Event(event_mutation)
+    }
+}
+
+impl From<ActivityMutation> for Mutation {
+    fn from(activity_mutation: ActivityMutation) -> Mutation {
+        Mutation::Activity(activity_mutation)
+    }
+}
+
 #[derive(Error, Debug)]
 pub enum UpdateError {
-    #[error("Duplicate ID {0} when adding todo")]
-    DuplicateAddTodoID(String),
-    #[error("ID {0} not found when updating todo")]
-    NotFoundUpdateTodoID(String),
-    #[error("Duplicate ID {0} when adding activity")]
-    DuplicateAddActivityID(String),
-    #[error("ID {0} not found when updating activity")]
-    NotFoundUpdateActivityID(String),
     #[error("Duplicate ID {0} when adding topic")]
     DuplicateAddTopicID(String),
     #[error("ID {0} not found when updating topic")]
     NotFoundUpdateTopicID(String),
+    #[error("Duplicate ID {0} when adding todo")]
+    DuplicateAddTodoID(String),
+    #[error("ID {0} not found when updating todo")]
+    NotFoundUpdateTodoID(String),
+    #[error("Duplicate ID {0} when adding event")]
+    DuplicateAddEventID(String),
+    #[error("ID {0} not found when updating event")]
+    NotFoundUpdateEventID(String),
+    #[error("Duplicate ID {0} when adding activity")]
+    DuplicateAddActivityID(String),
+    #[error("ID {0} not found when updating activity")]
+    NotFoundUpdateActivityID(String),
 }
 
 impl SharedState {
     pub fn update(&self, mutation: Mutation) -> Result<SharedState, UpdateError> {
         Ok(match mutation {
+            Mutation::Topic(TopicMutation::Add(topic)) => SharedState {
+                topics: {
+                    let mut topics = self.topics.clone();
+                    if topics.contains_key(&topic.id) {
+                        return Err(UpdateError::DuplicateAddTopicID(topic.id));
+                    }
+                    let id = topic.id.clone();
+                    topics.insert(id, topic);
+                    topics
+                },
+                ..(self.clone())
+            },
+            Mutation::Topic(TopicMutation::Update(topic)) => SharedState {
+                topics: {
+                    let mut topics = self.topics.clone();
+                    if !topics.contains_key(&topic.id) {
+                        return Err(UpdateError::NotFoundUpdateTopicID(topic.id));
+                    }
+                    let id = topic.id.clone();
+                    topics.insert(id, topic);
+                    topics
+                },
+                ..(self.clone())
+            },
             Mutation::Todo(TodoMutation::Add(todo)) => SharedState {
                 todos: {
                     let mut todos = self.todos.clone();
@@ -162,27 +247,27 @@ impl SharedState {
                 },
                 ..(self.clone())
             },
-            Mutation::Topic(TopicMutation::Add(topic)) => SharedState {
-                topics: {
-                    let mut topics = self.topics.clone();
-                    if topics.contains_key(&topic.id) {
-                        return Err(UpdateError::DuplicateAddTopicID(topic.id));
+            Mutation::Event(EventMutation::Add(event)) => SharedState {
+                events: {
+                    let mut events = self.events.clone();
+                    if events.contains_key(&event.id) {
+                        return Err(UpdateError::DuplicateAddEventID(event.id));
                     }
-                    let id = topic.id.clone();
-                    topics.insert(id, topic);
-                    topics
+                    let id = event.id.clone();
+                    events.insert(id, event);
+                    events
                 },
                 ..(self.clone())
             },
-            Mutation::Topic(TopicMutation::Update(topic)) => SharedState {
-                topics: {
-                    let mut topics = self.topics.clone();
-                    if !topics.contains_key(&topic.id) {
-                        return Err(UpdateError::NotFoundUpdateTopicID(topic.id));
+            Mutation::Event(EventMutation::Update(event)) => SharedState {
+                events: {
+                    let mut events = self.events.clone();
+                    if !events.contains_key(&event.id) {
+                        return Err(UpdateError::NotFoundUpdateEventID(event.id));
                     }
-                    let id = topic.id.clone();
-                    topics.insert(id, topic);
-                    topics
+                    let id = event.id.clone();
+                    events.insert(id, event);
+                    events
                 },
                 ..(self.clone())
             },
