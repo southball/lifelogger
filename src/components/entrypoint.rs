@@ -1,6 +1,8 @@
-use super::home::*;
+use super::Container;
 use crate::prelude::*;
+use crate::router::*;
 use yew::prelude::*;
+use yew_router::prelude::*;
 
 const STORAGE_KEY: &'static str = "LIFELOGGER_DATA";
 
@@ -43,7 +45,11 @@ pub fn entrypoint() -> Html {
 
     html! {
         <ContextProvider<StateContext> {context}>
-            <Home />
+            <BrowserRouter>
+                <Container>
+                    <Switch<AppRoute> render={Switch::render(switch)} />
+                </Container>
+            </BrowserRouter>
         </ContextProvider<StateContext>>
     }
 }

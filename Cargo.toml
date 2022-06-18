@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 derive_more = "0.99.17"
 yew = "0.19"
+yew-router = "0.16"
 im = { version = "15.1.0", features = ["serde"] }
 thiserror = "1.0.31"
 web-sys = { version = "0.3.57", features = ["Storage"] }

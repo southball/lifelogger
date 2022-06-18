@@ -1,6 +1,7 @@
 use crate::prelude::*;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
+use yew_router::prelude::*;
 
 #[function_component(Home)]
 pub fn home() -> Html {
@@ -29,10 +30,13 @@ pub fn home() -> Html {
                 { for todos.iter().map(|(id, todo)| {
                     html! {
                         <div key={id.clone().0}>
-                            <input type="checkbox" checked={todo.completed} disabled={true} />
-                            <b>{&todo.title}</b>
-                            {" "}
-                            <span>{&todo.description}</span>
+                            <Link<AppRoute> to={AppRoute::TodoEdit { query: todo.id.abbreviate().to_owned() }}>
+                                {&todo.id.abbreviate()}
+                                <input type="checkbox" checked={todo.completed} disabled={true} />
+                                <b>{&todo.title}</b>
+                                {" "}
+                                <span>{&todo.description}</span>
+                            </Link<AppRoute>>
                         </div>
                     }
                 }) }

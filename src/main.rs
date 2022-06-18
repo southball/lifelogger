@@ -8,6 +8,7 @@ pub mod components;
 pub mod context;
 pub mod models;
 pub mod prelude;
+pub mod router;
 
 fn main() {
     yew::start_app::<Entrypoint>();
