@@ -1,0 +1,288 @@
+<!DOCYTPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../static/bootstrap-5.2.0-beta1.min.css" />
+    <link rel="stylesheet" href="../static/fontawesome-6.1.1/css/all.min.css" />
+    <title>Home</title>
+    <style>
+      .tags-container > * {
+        margin-left: 0.125rem;
+        margin-top: 0.125rem;
+      }
+
+      .editor {
+        width: 20rem;
+        min-width: 20rem;
+        padding: 0.25rem 1rem;
+        border-left: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="d-flex flex-column" style="width: 100%; height: 100%">
+      <nav
+        class="navbar navbar-dark navbar-expand flex-shrink-1"
+        style="background-color: #0d503c"
+      >
+        <div class="container-fluid">
+          <a href="#" class="navbar-brand">Lifelogger</a>
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a href="#" class="nav-link active">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">Topics</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">Settings</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="d-flex flex-grow-1" style="min-height: 0">
+        <div class="flex-grow-1" style="overflow-y: auto">
+          <div id="body" class="container" style="margin-top: 1em">
+            <blockquote class="blockquote">Welcome, Southball!</blockquote>
+
+            <div class="row row-cols-1 row-cols-md-2 gx-4">
+              <div class="col">
+                <p class="h3">Todos</p>
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <div>
+                      <b>Todo 1</b>
+                      <span class="ms-2">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        2022/06/07 23:59
+                      </span>
+                    </div>
+                    <div class="d-flex tags-container flex-wrap">
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 1
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 2
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 3
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 4
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 5
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 6
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 7
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 8
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 9
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 10
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 11
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 12
+                      </span>
+                    </div>
+                    <p class="mb-0">Todo Description 1</p>
+                  </li>
+                  <li class="list-group-item">
+                    <div>
+                      <b>Todo 2</b>
+                      <span class="ms-2">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        2022/06/07 23:59
+                      </span>
+                    </div>
+                    <div class="d-flex tags-container flex-wrap">
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 1
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 2
+                      </span>
+                    </div>
+                    <p class="mb-0">Todo Description 2</p>
+                  </li>
+                  <li class="list-group-item">
+                    <div>
+                      <b>Todo 3</b>
+                      <span class="ms-2 me-1">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        2022/06/07 23:59
+                      </span>
+                    </div>
+                    <div class="d-flex tags-container flex-wrap">
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 1
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 2
+                      </span>
+                    </div>
+                    <p class="mb-0">Todo Description 3</p>
+                  </li>
+                  <li class="list-group-item">
+                    <div>
+                      <b>Todo 4</b>
+                      <span class="ms-2 me-1">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        2022/06/07 23:59
+                      </span>
+                    </div>
+                    <div class="d-flex tags-container flex-wrap">
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 1
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 2
+                      </span>
+                    </div>
+                    <p class="mb-0">Event Description 4</p>
+                  </li>
+                </ul>
+              </div>
+              <div class="col">
+                <p class="h3">Events</p>
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <div>
+                      <b>Event 1</b>
+                      <span class="ms-2 me-1">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        2022/06/07 00:00 ~ 2022/06/09 23:59
+                      </span>
+                    </div>
+                    <div class="d-flex tags-container flex-wrap">
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 1
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 2
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 3
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 4
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 5
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 6
+                      </span>
+                    </div>
+                    <p class="mb-0">Todo Description 1</p>
+                  </li>
+                  <li class="list-group-item">
+                    <div>
+                      <b>Event 2</b>
+                      <span class="ms-2 me-1">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        2022/06/07 00:00 ~ 2022/06/09 23:59
+                      </span>
+                    </div>
+                    <div class="d-flex tags-container flex-wrap">
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 1
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 2
+                      </span>
+                    </div>
+                    <p class="mb-0">Event Description 2</p>
+                  </li>
+                  <li class="list-group-item">
+                    <div>
+                      <b>Event 3</b>
+                      <span class="ms-2 me-1">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        2022/06/07 00:00 ~ 2022/06/09 23:59
+                      </span>
+                    </div>
+                    <div class="d-flex tags-container flex-wrap">
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 1
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 2
+                      </span>
+                    </div>
+                    <p class="mb-0">Event Description 3</p>
+                  </li>
+                  <li class="list-group-item">
+                    <div>
+                      <b>Event 4</b>
+                      <span class="ms-2 me-1">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        2022/06/07 00:00 ~ 2022/06/09 23:59
+                      </span>
+                    </div>
+                    <div class="d-flex tags-container flex-wrap">
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 1
+                      </span>
+                      <span class="badge bg-success" style="font-size: 0.6rem">
+                        Topic 2
+                      </span>
+                    </div>
+                    <p class="mb-0">Event Description 4</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="editor" class="editor" style="overflow-y: auto">
+          <p class="h4">Edit Todo</p>
+
+          <form>
+            <div class="mb-2">
+              <label class="form-label mb-0" style="font-size: 0.875rem"
+                >Title</label
+              >
+              <input
+                class="form-control form-control-sm"
+                type="text"
+                value="Todo 1"
+              />
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label mb-0" style="font-size: 0.875rem"
+                >Description</label
+              >
+              <textarea class="form-control form-control-sm">
+Todo 1 Description</textarea
+              >
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label mb-0" style="font-size: 0.875rem"
+                >Topic</label
+              >
+              <!-- May want to replace with custom topic selector -->
+              <select class="form-select form-select-sm" value="topic-1">
+                <option value="topic-1">Topic 1</option>
+                <option value="topic-2">Topic 2</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
